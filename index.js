@@ -18,16 +18,37 @@ const promoRoutes = require("./src/promoRouter");
 connect.then((db) => {
   console.log("connected");
   Dishes.create({
-    name: "Test 1",
-    description: "test1",
+    name: "Uthappizza",
+    description: "test",
   })
     .then((dish) => {
       console.log(dish);
-      return Dishes.find({}).exec();
+
+      return Dishes.findByIdAndUpdate(
+        dish._id,
+        {
+          $set: { description: "Updated test" },
+        },
+        {
+          new: true,
+        }
+      ).exec();
     })
-    .then((dishes) => {
-      console.log(dishes);
-      return Dishes.deleteMany({});
+    .then((dish) => {
+      console.log(dish);
+
+      dish.comments.push({
+        rating: 5,
+        comment: "I'm getting a sinking feeling!",
+        author: "Leonardo di Carpaccio",
+      });
+
+      return dish.save();
+    })
+    .then((dish) => {
+      console.log(dish);
+
+      return Dishes.remove({});
     })
     .then(() => {
       return mongoose.connection.close();
