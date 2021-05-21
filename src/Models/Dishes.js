@@ -1,6 +1,9 @@
-const moongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-const Schema = moongoose.Schema;
+require("mongoose-currency").loadType(mongoose);
+const Currency = mongoose.Types.Currency;
+
+const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema(
   {
@@ -48,8 +51,9 @@ const DishSchema = new Schema(
       default: "",
     },
     price: {
-      type: String,
+      type: Currency,
       required: true,
+      min: 0,
     },
     featured: {
       type: Boolean,
@@ -62,6 +66,6 @@ const DishSchema = new Schema(
   }
 );
 
-let Dishes = moongoose.model("Dish", DishSchema);
+let Dishes = mongoose.model("Dish", DishSchema);
 
 module.exports = Dishes;
