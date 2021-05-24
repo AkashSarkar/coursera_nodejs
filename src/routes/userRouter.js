@@ -3,6 +3,7 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const Users = require("../Models/Users");
+const Authenticate = require("../Authenticate");
 
 const userRoutes = express.Router();
 
@@ -32,10 +33,12 @@ userRoutes.post("/signup", (req, res, next) => {
 });
 
 userRoutes.post("/login", passport.authenticate("local"), (req, res, next) => {
+  const token = Authenticate.getToken({ _id: req.user._id });
   res.statusCode = 200;
   res.json({
     status: "Login success",
     success: true,
+    token: token,
   });
 });
 
