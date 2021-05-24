@@ -1,5 +1,5 @@
 const express = require("express");
-const Authenticate = require("../Authenticate");
+const { verifyUser, verifyAdmin } = require("../Authenticate");
 const Leaders = require("../Models/Leaders");
 
 const leaderRouters = express.Router();
@@ -13,7 +13,7 @@ leaderRouters
       })
       .catch((err) => next(err));
   })
-  .post(Authenticate.verifyUser, (req, res, next) => {
+  .post([verifyUser, verifyAdmin], (req, res, next) => {
     Leaders.create(req.body)
       .then((leader) => {
         return res.status(201).json({
@@ -23,11 +23,11 @@ leaderRouters
       })
       .catch((err) => next(err));
   })
-  .put(Authenticate.verifyUser, (req, res, next) => {
+  .put([verifyUser, verifyAdmin],(req, res, next) => {
     res.statusCode = 403;
     res.send("PUT operation not supported on /leaders");
   })
-  .delete(Authenticate.verifyUser, (req, res, next) => {
+  .delete([verifyUser, verifyAdmin], (req, res, next) => {
     Leaders.deleteMany({})
       .then((resp) => {
         return res.status(200).json(resp);
@@ -44,13 +44,13 @@ leaderRouters
       })
       .catch((err) => next(err));
   })
-  .post(Authenticate.verifyUser, (req, res, next) => {
+  .post([verifyUser, verifyAdmin], (req, res, next) => {
     res.statusCode = 403;
     res.end(
       "POST operation not supported on /promotions/" + req.params.leaderId
     );
   })
-  .put(Authenticate.verifyUser, (req, res, next) => {
+  .put([verifyUser, verifyAdmin], (req, res, next) => {
     Leaders.findByIdAndUpdate(
       req.params.leaderId,
       {
@@ -63,7 +63,7 @@ leaderRouters
       })
       .catch((err) => next(err));
   })
-  .delete(Authenticate.verifyUser, (req, res, next) => {
+  .delete([verifyUser, verifyAdmin], (req, res, next) => {
     Leaders.findByIdAndDelete(req.params.leaderId)
       .then((resp) => {
         return res.status(200).json(resp);
