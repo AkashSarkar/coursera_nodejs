@@ -6,6 +6,8 @@ const passport = require("passport");
 const Authenticate = require("./src/Authenticate");
 const config = require("./config");
 const mongoose = require("mongoose");
+const https = require("https");
+const fs = require("fs");
 
 const dishRoutes = require("./src/routes/dishRouter");
 const leaderRouters = require("./src/routes/leaderRouter");
@@ -40,6 +42,21 @@ app.use("/dishes", dishRoutes);
 app.use("/promotions", promoRoutes);
 app.use("/leaders", leaderRouters);
 
+app.set("secPort", port + 443);
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+const options = {
+  key: fs.readFileSync(__dirname + "/private.key"),
+  cert: fs.readFileSync(__dirname + "/certificate.pem"),
+};
+
+const SecureServer = https.createServer(options, app);
+
+SecureServer.listen(app.get("secPort"), () => {
+  console.log("Server listening on port" + app.get("secPort"));
+});
+
+SecureServer.on("error");
+SecureServer.on("listening");
