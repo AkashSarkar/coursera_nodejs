@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { verifyUser, verifyAdmin } = require("../Authenticate");
+const { verifyUser, verifyAdmin } = require("../src/Authenticate");
 
-const Dishes = require("../Models/Dishes");
+const Dishes = require("../src/Models/Dishes");
 
 const dishRoutes = express.Router();
 

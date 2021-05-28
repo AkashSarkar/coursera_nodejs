@@ -1,74 +1,74 @@
 const express = require("express");
-const { verifyUser, verifyAdmin } = require("../Authenticate");
-const Promotions = require("../Models/Promotions");
+const { verifyUser, verifyAdmin } = require("../src/Authenticate");
+const Leaders = require("../src/Models/Leaders");
 
-const promoRoutes = express.Router();
+const leaderRouters = express.Router();
 
-promoRoutes
+leaderRouters
   .route("/")
   .get((req, res) => {
-    Promotions.find({})
-      .then((promos) => {
-        return res.status(200).json(promos);
+    Leaders.find({})
+      .then((leader) => {
+        return res.status(200).json(leader);
       })
       .catch((err) => next(err));
   })
   .post([verifyUser, verifyAdmin], (req, res, next) => {
-    Promotions.create(req.body)
-      .then((promo) => {
+    Leaders.create(req.body)
+      .then((leader) => {
         return res.status(201).json({
           status: "success",
-          promo: promo,
+          promo: leader,
         });
       })
       .catch((err) => next(err));
   })
-  .put([verifyUser, verifyAdmin], (req, res, next) => {
+  .put([verifyUser, verifyAdmin],(req, res, next) => {
     res.statusCode = 403;
-    res.send("PUT operation not supported on /promos");
+    res.send("PUT operation not supported on /leaders");
   })
   .delete([verifyUser, verifyAdmin], (req, res, next) => {
-    Promotions.deleteMany({})
+    Leaders.deleteMany({})
       .then((resp) => {
         return res.status(200).json(resp);
       })
       .catch((err) => next(err));
   });
 
-promoRoutes
-  .route("/:promoId")
+leaderRouters
+  .route("/:leaderId")
   .get((req, res, next) => {
-    Promotions.findById(req.params.promoId)
-      .then((promo) => {
-        return res.status(200).json(promo);
+    Leaders.findById(req.params.leaderId)
+      .then((leader) => {
+        return res.status(200).json(leader);
       })
       .catch((err) => next(err));
   })
   .post([verifyUser, verifyAdmin], (req, res, next) => {
     res.statusCode = 403;
     res.end(
-      "POST operation not supported on /promotions/" + req.params.promoId
+      "POST operation not supported on /promotions/" + req.params.leaderId
     );
   })
   .put([verifyUser, verifyAdmin], (req, res, next) => {
-    Promotions.findByIdAndUpdate(
-      req.params.promoId,
+    Leaders.findByIdAndUpdate(
+      req.params.leaderId,
       {
         $set: req.body,
       },
       { new: true }
     )
-      .then((promo) => {
-        return res.status(201).json(promo);
+      .then((leader) => {
+        return res.status(201).json(leader);
       })
       .catch((err) => next(err));
   })
   .delete([verifyUser, verifyAdmin], (req, res, next) => {
-    Promotions.findByIdAndDelete(req.params.promoId)
+    Leaders.findByIdAndDelete(req.params.leaderId)
       .then((resp) => {
         return res.status(200).json(resp);
       })
       .catch((err) => next(err));
   });
 
-module.exports = promoRoutes;
+module.exports = leaderRouters;
