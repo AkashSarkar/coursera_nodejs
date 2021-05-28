@@ -1,9 +1,8 @@
 const express = require("express");
-const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const Users = require("../Models/Users");
-const { verifyAdmin, verifyUser, getToken } = require("../Authenticate");
+const Users = require("../src/Models/Users");
+const { verifyAdmin, verifyUser, getToken } = require("../src/Authenticate");
 
 const userRoutes = express.Router();
 
