@@ -15,8 +15,7 @@ const userRoutes = require("./routes/userRouter");
 const uploadRoutes = require("./routes/uploadRouter");
 
 const config = require("./config");
-
-const { hostname } = require("os");
+const favoriteRoutes = require("./routes/favoriteRouter");
 
 var app = express();
 
@@ -65,6 +64,7 @@ app.use("/dishes", dishRoutes);
 app.use("/promotions", promoRoutes);
 app.use("/leaders", leaderRouters);
 app.use("/imageUpload", uploadRoutes);
+app.use("/favorites", favoriteRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

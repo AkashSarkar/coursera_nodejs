@@ -1,14 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { verifyUser, verifyAdmin } = require("../src/Authenticate");
-
+const cors = require("./cors");
 const Dishes = require("../src/Models/Dishes");
 
 const dishRoutes = express.Router();
 
 dishRoutes
   .route("/")
-  .get((req, res, next) => {
+  .options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+  })
+  .get(cors.cors, (req, res, next) => {
     Dishes.find({})
       .populate("comments.author")
       .then((dishes) => {
@@ -16,7 +19,7 @@ dishRoutes
       })
       .catch((err) => next(err));
   })
-  .post([verifyUser, verifyAdmin], (req, res, next) => {
+  .post([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     Dishes.create(req.body)
       .then((dish) => {
         return res.status(201).json({
@@ -26,11 +29,11 @@ dishRoutes
       })
       .catch((err) => console.log(err));
   })
-  .put([verifyUser, verifyAdmin], (req, res, next) => {
+  .put([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     res.statusCode = 403;
     res.send("PUT operation not supported on /dishes");
   })
-  .delete([verifyUser, verifyAdmin], (req, res, next) => {
+  .delete([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     Dishes.deleteMany({})
       .then((resp) => {
         return res.status(200).json(resp);
@@ -48,11 +51,11 @@ dishRoutes
       })
       .catch((err) => next(err));
   })
-  .post([verifyUser, verifyAdmin], (req, res, next) => {
+  .post([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     res.statusCode = 403;
     res.end("POST operation not supported on /dishes/" + req.params.dishId);
   })
-  .put([verifyUser, verifyAdmin], (req, res, next) => {
+  .put([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     Dishes.findByIdAndUpdate(
       req.params.dishId,
       {
@@ -65,7 +68,7 @@ dishRoutes
       })
       .catch((err) => next(err));
   })
-  .delete([verifyUser, verifyAdmin], (req, res, next) => {
+  .delete([cors.corsWithOptions, verifyUser, verifyAdmin], (req, res, next) => {
     Dishes.findByIdAndDelete(req.params.dishId)
       .then((resp) => {
         return res.status(200).json(resp);
